@@ -1,6 +1,23 @@
-x_values <- seq(1, 3)
-y_values <- seq(1,3)
-
+library(dplyr)
+library(tidyverse)
 library(ggplot2)
-ggplot() +
-  geom_line(aes(x=x_values, y = y_values))
+data <- read.csv("https://raw.githubusercontent.com/melaniewalsh/Neat-Datasets/main/us-prison-jail-rates-1990.csv")
+County_data <- data %>%
+  filter(state == "WA" & county_name == "King County") %>%
+  pivot_longer(cols = c(aapi_prison_pop_rate, black_prison_pop_rate, native_prison_pop_rate, white_prison_pop_rate), 
+               names_to = "race", 
+               values_to = "prison_pop_rate") %>%
+  mutate(race = recode(race, 
+                       aapi_prison_pop_rate = "Asian American / Pacific Islander",
+                       black_prison_pop_rate = "Black",
+                       latinx_prison_pop_rate = "Latinx",
+                       native_prison_pop_rate = "Native American",
+                       white_prison_pop_rate = "White"))
+ggplot(County_data, aes(x = year, y = prison_pop_rate, color = race)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(min(County_data$year), max(County_data$year), by = 5)) +
+  labs(title = "Prison Population Rates in King County, WA",
+       x = "Year",
+       y = "Prison Population Rate",
+       color = "Race/Ethnicity") +
+  theme_minimal()
