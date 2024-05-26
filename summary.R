@@ -2,57 +2,17 @@ library(dplyr)
 library(tidyverse)
 library(purrr)
 data <- read.csv("https://raw.githubusercontent.com/melaniewalsh/Neat-Datasets/main/us-prison-jail-rates-1990.csv")
-# Only use data for the summary part.
+data_population <- read.csv("https://raw.githubusercontent.com/melaniewalsh/Neat-Datasets/main/us-jail-pop.csv")
 
 # How many columns and rows are in this dataset?
 data %>%
   summarise(num_rows = nrow(data), num_cols = ncol(data))
- 
-# Location with 
 
 # Create a new column called "location" in the form "County, State"
 data <- data %>%
   mutate(location = paste(county_name, state, sep = ", "))
-# Which location has the greatest total jail pop rate? and what that rate is?
-data %>%
-  filter(total_jail_pop_rate == max(total_jail_pop_rate, na.rm = TRUE)) %>%
-  summarise(highest_jail = location)
-# Which location has the greatest total prison pop rate? and what that rate is?
-data %>%
-  filter(total_prison_pop_rate == max(total_prison_pop_rate, na.rm = TRUE)) %>%
-  summarise(highest_prison = location)
 
-# ADD: in King County WA: 
-
-
-
-# Create a function to determine the race with highest jail rate
-highest_jail_race <- function(x){
-  races <- c("aapi", "black", "latinx", "native", "white")
-  rates <- x
-  if (all(is.na(rates))) {
-    return(NA_character_)
-  } else {
-    return(races[which.max(rates)])
-  }
-}
-# Create a new column
-data <- data %>%
-  mutate(race_highest_jail = pmap_chr(
-    list(aapi_jail_pop_rate, black_jail_pop_rate, latinx_jail_pop_rate, 
-         native_jail_pop_rate, white_jail_pop_rate), 
-    ~ highest_jail_race(c(...))))
-# Which race has the highest jail population rate in each county most frequently
-# (considered all years)? 
-data %>%
-  group_by(county_name) %>%
-  filter(!is.na(race_highest_jail)) %>%
-  count(race_highest_jail, sort = TRUE) %>%
-  slice(1) %>%
-  summarise(most_frequent_race = race_highest_jail) %>%
-  count(most_frequent_race, sort = TRUE)
-
-# Prison
+# Create a new column called "race_highest_prison" TO SHOW {}
 highest_prison_race <- function(x){
   races <- c("aapi", "black", "latinx", "native", "white")
   rates <- x
@@ -62,51 +22,64 @@ highest_prison_race <- function(x){
     return(races[which.max(rates)])
   }
 }
-# Create a new column
 data <- data %>%
   mutate(race_highest_prison = pmap_chr(
     list(aapi_prison_pop_rate, black_prison_pop_rate, latinx_prison_pop_rate,
          native_prison_pop_rate, white_prison_pop_rate),
     ~ highest_prison_race(c(...))))
-# Which race appears most frequently as the race with the highest prison 
-# population rate among all counties?
-data %>%
-  group_by(county_name) %>%
-  filter(!is.na(race_highest_prison)) %>%
-  count(race_highest_prison, sort = TRUE) %>%
-  slice(1) %>%
-  summarise(most_frequent_race = race_highest_prison) %>%
-  count(most_frequent_race, sort = TRUE)
 
-# Which urbanicity category has the highest total prison population rate? 
-data %>%
-  filter(!is.na(total_prison_pop_rate)) %>%
-  filter(total_prison_pop_rate == max(total_prison_pop_rate)) %>%
-  summarise(urbanicity_highest_prison = urbanicity)
-
-# Which urbanicity category has the highest total jail population rate? 
-data %>%
-  filter(!is.na(total_jail_pop_rate)) %>%
-  filter(total_jail_pop_rate == max(total_jail_pop_rate)) %>%
-  summarise(urbanicity_highest_jail = urbanicity)
-
-# In each kind of urbanicity above, which race has appeared the most frequent as 
-# the highest? 
-
-
-
-# Gender MAY BE DELETED: turn to calculate median and mean
-# Calculate the difference between male_jail_pop_rate and female_jail_pop_rate. 
-# Calculate the difference between male_prison_pop_rate and female_prison_pop_rate
-# Make two new columns.
+# Create a new column called "race_highest_jail" TO SHOW {}
+highest_jail_race <- function(x){
+  races <- c("aapi", "black", "latinx", "native", "white")
+  rates <- x
+  if (all(is.na(rates))) {
+    return(NA_character_)
+  } else {
+    return(races[which.max(rates)])
+  }
+}
 data <- data %>%
-  mutate(dif_jail_gender = male_jail_pop_rate - female_jail_pop_rate, 
-         dif_prison_gender = male_prison_pop_rate - female_prison_pop_rate)
-# How many rows have positive number in dif_jail_gender?
+  mutate(race_highest_jail = pmap_chr(
+    list(aapi_jail_pop_rate, black_jail_pop_rate, latinx_jail_pop_rate, 
+         native_jail_pop_rate, white_jail_pop_rate), 
+    ~ highest_jail_race(c(...))))
+
+# In King County -- Washington's most populated county
+# Which is the highest total prison population rate that has occured in King County, WA?
+# What is that rate and what is the year it occurred?
+# What is the corresponding race that has the highest prison_pop_rate in King County at that time?
 data %>%
-  filter(dif_jail_gender > 0) %>%
-  summarise(count = n())
-# How many rows have positive number in dif_prison_gender?
+  filter(location == "King County, WA") %>%
+  filter(total_prison_pop_rate == max(total_prison_pop_rate, na.rm = TRUE)) %>%
+  summarise(highest_rate = total_prison_pop_rate, year = year, race = race_highest_prison)
+
+# Gender
+# What is the mean, median, and standard deviation of male prison population rate?
 data %>%
-  filter(dif_prison_gender > 0) %>%
-  summarise(count = n())
+  summarise(mean = mean(male_prison_pop_rate, na.rm = TRUE), 
+            median = median(male_prison_pop_rate, na.rm = TRUE),
+            sd = sd(male_prison_pop_rate, na.rm = TRUE))
+# What about female prison population rate?
+data %>%
+  summarise(mean = mean(female_prison_pop_rate, na.rm = TRUE), 
+            median = median(female_prison_pop_rate, na.rm = TRUE),
+            sd = sd(female_prison_pop_rate, na.rm = TRUE))
+
+# Jail Population
+# In the latest year, which are the states with top 3 highest total jail population?
+# For each state, which race has occurred most frequently as the race with the highest jail population rate?
+top_states <- data_population %>%
+  filter(year == max(year, na.rm = TRUE)) %>%
+  arrange(desc(total_jail_pop)) %>%
+  slice(1:3) %>%
+  reframe(state = state)
+top_states_rate <- data %>%
+  filter(year == max(year, na.rm = TRUE)) %>%
+  filter(state %in% top_states$state) %>%
+  count(state, race_highest_jail) %>%
+  arrange(state, desc(n)) %>%
+  group_by(state) %>%
+  slice(1) %>%
+  ungroup() %>%
+  rename(race_highest_frequent = race_highest_jail, count = n) %>%
+  select(state, race_highest_frequent)
