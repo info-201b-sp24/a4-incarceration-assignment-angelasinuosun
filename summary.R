@@ -7,12 +7,12 @@ data_population <- read.csv("https://raw.githubusercontent.com/melaniewalsh/Neat
 # How many columns and rows are in this dataset?
 data %>%
   summarise(num_rows = nrow(data), num_cols = ncol(data))
+data_population %>%
+  summarise(num_rows = nrow(data_population), num_cols = ncol(data_population))
 
-# Create a new column called "location" in the form "County, State"
 data <- data %>%
   mutate(location = paste(county_name, state, sep = ", "))
 
-# Create a new column called "race_highest_prison" TO SHOW {}
 highest_prison_race <- function(x){
   races <- c("aapi", "black", "latinx", "native", "white")
   rates <- x
@@ -27,8 +27,6 @@ data <- data %>%
     list(aapi_prison_pop_rate, black_prison_pop_rate, latinx_prison_pop_rate,
          native_prison_pop_rate, white_prison_pop_rate),
     ~ highest_prison_race(c(...))))
-
-# Create a new column called "race_highest_jail" TO SHOW {}
 highest_jail_race <- function(x){
   races <- c("aapi", "black", "latinx", "native", "white")
   rates <- x
@@ -59,15 +57,12 @@ data %>%
   summarise(mean = mean(male_prison_pop_rate, na.rm = TRUE), 
             median = median(male_prison_pop_rate, na.rm = TRUE),
             sd = sd(male_prison_pop_rate, na.rm = TRUE))
-# What about female prison population rate?
+# What about female?
 data %>%
   summarise(mean = mean(female_prison_pop_rate, na.rm = TRUE), 
             median = median(female_prison_pop_rate, na.rm = TRUE),
             sd = sd(female_prison_pop_rate, na.rm = TRUE))
-
-# Jail Population
-# In the latest year, which are the states with top 3 highest total jail population?
-# For each state, which race has occurred most frequently as the race with the highest jail population rate?
+# States with top 3 highest total jail population
 top_states <- data_population %>%
   filter(year == max(year, na.rm = TRUE)) %>%
   arrange(desc(total_jail_pop)) %>%
