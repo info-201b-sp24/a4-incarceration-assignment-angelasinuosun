@@ -22,9 +22,20 @@ rate_data <- rate_data %>%
   filter(year >= (max(year) - 20)) %>%
   drop_na()
 
+colors <- c("aapi" = "firebrick1", "black" = "#7570b3", "latinx" = "blue1", "native" = "yellow2", "white" = "yellowgreen")
+race_names <- c("aapi" = "Asian American / Pacific Islander",
+                "black" = "Black",
+                "latinx" = "Latinx",
+                "native" = "Native American",
+                "white" = "White")
+
 ggplot(rate_data, aes(x = female_prison_pop_rate, y = male_prison_pop_rate, 
                       color = race_highest_prison)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) + 
-  labs(title = "Male and Female Prison Population Rate") +
+  scale_color_manual(values = colors, labels = race_names) +
+  labs(title = "Male and Female Prison Population Rate", 
+       x = "Female Prison Population per 100,000 People",
+       y = "Male Prison Population per 100,000 People",
+       color = "Race/Ethnicity with Highest Prison Population Rate") +
   theme_minimal()
