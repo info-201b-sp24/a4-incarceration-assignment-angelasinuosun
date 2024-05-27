@@ -5,19 +5,14 @@ output: html_document
 
 ### Introduction
 
-As a student in Seattle, which is the county seat of King County, Washington, I am interested in the prison population rate in King County, WA. Because policies or people's perceptions change over time, I'd like to know the historical peaks of prison population rate and varies in different races since 1990 in King County, WA. Since racial and sexual injustice and oppression are always intertwined, I am also curious if there is any possible hint on the relation or intersection of sexual and racial issues. Thus, I intend to analyze the data on male and female prison population rates, along with the race that has the highest prison population rate in each county. Unlike the prison population, for the jail population, I am more inclined to base my analysis on states and focus on the latest year. Geographic divisions perhaps suggest some kind of discriminatory, oppressive, or prejudicial geographic tendency, so I intend to see the geographical distribution of the total jail population across the U.S. and the corresponding race that has appeared most frequently as the race with the highest jail population rate. I expect to find some commonalities in the geographic distribution.
+This data analysis and visualization on incarceration involve both the prison population and jail population. As a student in Seattle, which is the county seat of King County, Washington, I am interested in the prison population rate in King County, WA. Because policies or people's perceptions change over time, I'd like to know the historical peaks of prison population rates and variations in different races since 1990 in King County, WA. Since racial and sexual injustice and oppression are always intertwined, I am also curious if there is any possible hint on the relation or intersection of sexual and racial issues. Thus, I intend to analyze the data on male and female prison population rates, along with the race that has the highest prison population rate in each county. Unlike the prison population, for the jail population, I am more inclined to base my analysis on states and focus on the latest year. Geographic divisions perhaps suggest some kind of discriminatory, oppressive, or prejudicial geographic tendency, so I intend to see the geographical distribution of the total jail population across the U.S. and the corresponding race that has appeared most frequently as the race with the highest jail population rate. I expect to find some commonalities in the geographic distribution.
 
 ### Summary Information
 
-Write a summary paragraph of findings that includes the 5 values calculated from your summary information R script
-
-These will likely be calculated using your DPLYR skills, answering questions such as: 
-
-- What is the average value of my variable across all the counties (in the current year)?
-- Where is my variable the highest / lowest?
-- How much has my variable change over the last N years?
-
-Feel free to calculate and report values that you find relevant. Again, remember that the purpose is to think about how these measure of incarceration vary by race.
+I have analyzed data on prison population and jail population based on a specific county: King County, Washington, from a gender-related perspective, and about distributions from across the U.S. In King County, a diverse and densely populated area, the highest total prison population rate occurred in 1996, with Black individuals experiencing the highest prison population rates. The trend showed that the Black prison population rate peaked in line with the total rate, unlike other races. Black and Native American rates were consistently higher than others, suggesting potential racial inequalities in law enforcement and treatment.  
+Gender analysis revealed that males had a mean prison population rate of 1161.781 per 100,000 people, with a median of 996.18 and a standard deviation of 1374.202. Females had a mean rate of 104.636, a median of 76.205, and a standard deviation of 167.1554. The comparison chart showed a positive correlation between male and female prison population rates and may indicate possible gender bias alongside racial disparities.  
+Nationally, the states with the highest jail populations were California, New York, and Texas, with Black individuals having the highest jail population rates. The map visualization highlighted that only Black and Native American populations appeared, emphasizing their disproportionate and unreasonable incarceration rates across the country.  
+In conclusion, this analysis suggests a potentially unjust justice system across the country, particularly affecting Black and Native American communities.  
 
 ### The Dataset
 
